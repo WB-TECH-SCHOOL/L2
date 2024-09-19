@@ -2,6 +2,7 @@ package routers
 
 import (
 	"http/internal/delivery/handlers"
+	"http/internal/delivery/middleware"
 	"http/internal/services"
 	"net/http"
 )
@@ -10,10 +11,10 @@ func InitRouting() {
 	eventService := services.InitEventService()
 	eventHandler := handlers.InitEventHandler(eventService)
 
-	http.HandleFunc("/create_event", eventHandler.CreateEvent)
-	http.HandleFunc("/events_for_day", eventHandler.GetEventsForDay)
-	http.HandleFunc("/events_for_week", eventHandler.GetEventsForWeek)
-	http.HandleFunc("/events_for_month", eventHandler.GetEventsForMonth)
-	http.HandleFunc("/update_event", eventHandler.UpdateEvent)
-	http.HandleFunc("/delete_event", eventHandler.DeleteEvent)
+	http.Handle("/create_event", middleware.LogRequests(http.HandlerFunc(eventHandler.CreateEvent)))
+	http.Handle("/events_for_day", middleware.LogRequests(http.HandlerFunc(eventHandler.GetEventsForDay)))
+	http.Handle("/events_for_week", middleware.LogRequests(http.HandlerFunc(eventHandler.GetEventsForWeek)))
+	http.Handle("/events_for_month", middleware.LogRequests(http.HandlerFunc(eventHandler.GetEventsForMonth)))
+	http.Handle("/update_event", middleware.LogRequests(http.HandlerFunc(eventHandler.UpdateEvent)))
+	http.Handle("/delete_event", middleware.LogRequests(http.HandlerFunc(eventHandler.DeleteEvent)))
 }
