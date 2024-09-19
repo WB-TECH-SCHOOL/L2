@@ -1,13 +1,22 @@
 package services
 
 import (
-	"fmt"
 	"http/internal/converters"
+	"http/internal/errs"
 	"http/internal/models/domain"
 	"http/internal/models/dto"
 	"sync"
 	"time"
 )
+
+type Events interface {
+	CreateEvent(event dto.EventCreate) (int, error)
+	GetEventsForDay(date time.Time) []dto.Event
+	GetEventsForWeek(date time.Time) []dto.Event
+	GetEventsForMonth(date time.Time) []dto.Event
+	UpdateEvent(event dto.EventUpdate) error
+	DeleteEvent(id int) error
+}
 
 type eventService struct {
 	events map[int]domain.Event
@@ -85,7 +94,7 @@ func (e *eventService) UpdateEvent(event dto.EventUpdate) error {
 	e.mu.Lock()
 	defer e.mu.Unlock()
 	if _, exists := e.events[event.ID]; !exists {
-		return fmt.Errorf("event not found")
+		return errs.ErrorNotFound
 	}
 	e.events[event.ID] = e.converter.EventUpdateDTOToDomain(event)
 	return nil
@@ -95,7 +104,7 @@ func (e *eventService) DeleteEvent(id int) error {
 	e.mu.Lock()
 	defer e.mu.Unlock()
 	if _, exists := e.events[id]; !exists {
-		return fmt.Errorf("event not found")
+		return errs.ErrorNotFound
 	}
 	delete(e.events, id)
 	return nil

@@ -1,0 +1,226 @@
+definitions:
+  dto.Event:
+    properties:
+      date:
+        type: string
+      id:
+        type: integer
+      title:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  dto.EventCreate:
+    properties:
+      date:
+        type: string
+      title:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  dto.EventUpdate:
+    properties:
+      date:
+        type: string
+      id:
+        type: integer
+      title:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  responses.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  responses.SuccessResponse:
+    properties:
+      result: {}
+    type: object
+info:
+  contact: {}
+paths:
+  /create_event:
+    post:
+      consumes:
+      - application/json
+      description: Create a new event
+      parameters:
+      - description: Event data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dto.EventCreate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Create Event
+      tags:
+      - event
+  /delete_event:
+    delete:
+      description: Delete an event by ID
+      parameters:
+      - description: Event ID
+        in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Delete Event
+      tags:
+      - event
+  /events_for_day:
+    get:
+      description: Get events for a specific day
+      parameters:
+      - description: Date in YYYY-MM-DD format
+        in: query
+        name: date
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.SuccessResponse'
+            - properties:
+                result:
+                  items:
+                    $ref: '#/definitions/dto.Event'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Get Events for a Day
+      tags:
+      - event
+  /events_for_month:
+    get:
+      description: Get events for a specific month
+      parameters:
+      - description: Date in YYYY-MM-DD format
+        in: query
+        name: date
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.SuccessResponse'
+            - properties:
+                result:
+                  items:
+                    $ref: '#/definitions/dto.Event'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Get Events for a Month
+      tags:
+      - event
+  /events_for_week:
+    get:
+      description: Get events for a specific week
+      parameters:
+      - description: Date in YYYY-MM-DD format
+        in: query
+        name: date
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.SuccessResponse'
+            - properties:
+                result:
+                  items:
+                    $ref: '#/definitions/dto.Event'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Get Events for a Week
+      tags:
+      - event
+  /update_event:
+    put:
+      consumes:
+      - application/json
+      description: Update an existing event
+      parameters:
+      - description: Event data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dto.EventUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Update Event
+      tags:
+      - event
+swagger: "2.0"
